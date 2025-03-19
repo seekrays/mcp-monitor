@@ -2,6 +2,8 @@
 
 A system monitoring tool that exposes system metrics via the Model Context Protocol (MCP). This tool allows LLMs to retrieve real-time system information through an MCP-compatible interface.
 
+![](./doc//snapshot-1.png)
+
 ## Features
 
 This tool provides the following monitoring capabilities:
