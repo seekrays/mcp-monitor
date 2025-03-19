@@ -13,28 +13,6 @@ This tool provides the following monitoring capabilities:
 - **Host Information**: System details, uptime, boot time, and users
 - **Process Information**: Process listing, sorting, and detailed per-process statistics
 
-## Requirements
-
-- Go 1.16 or higher
-- Compatible with any LLM that supports the Model Context Protocol
-
-## Installation
-
-```bash
-git clone https://github.com/seekrays/mcp-monitor.git
-cd mcp-monitor
-make build
-```
-
-## Usage
-
-Run the compiled binary:
-
-```bash
-./mcp-monitor
-```
-
-The server starts in stdio mode, ready to communicate with an MCP-compatible LLM client.
 
 ## Available Tools
 
@@ -93,14 +71,25 @@ Parameters:
   - sort_by (string, default: "cpu"): Sort field (cpu, memory, pid, name)
 ```
 
-## Libraries Used
 
-- [github.com/mark3labs/mcp-go](https://github.com/mark3labs/mcp-go): Go implementation of the Model Context Protocol
-- [github.com/shirou/gopsutil](https://github.com/shirou/gopsutil): Cross-platform library for process and system monitoring
+## Installation
 
-## License
+```bash
+git clone https://github.com/seekrays/mcp-monitor.git
+cd mcp-monitor
+make build
+```
 
-MIT
+## Usage
+
+Run the compiled binary:
+
+```bash
+./mcp-monitor
+```
+
+The server starts in stdio mode, ready to communicate with an MCP-compatible LLM client.
+
 
 ## Contributing
 
