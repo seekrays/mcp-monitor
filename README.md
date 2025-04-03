@@ -1,8 +1,10 @@
 # MCP System Monitor
 
+[![Discord](https://img.shields.io/badge/Discord-Join%20Chat-blue?style=flat&logo=discord)](https://discord.gg/kbMJ9Qpf)
+
 A system monitoring tool that exposes system metrics via the Model Context Protocol (MCP). This tool allows LLMs to retrieve real-time system information through an MCP-compatible interface.
 
-![](./doc//snapshot-1.png)
+![](./doc/snapshot-1.png)
 
 ## Features
 
