@@ -1,7 +1,9 @@
 package main
 
 import (
+	"flag"
 	"fmt"
+	"log"
 
 	"github.com/mark3labs/mcp-go/server"
 	"github.com/seekrays/mcp-monitor/cpu"
@@ -37,9 +39,22 @@ func main() {
 	// Add process tool
 	s.AddTool(process.NewTool(), process.Handler)
 
-	// Start the stdio server
-	fmt.Println("Starting MCP System Monitor server...")
-	if err := server.ServeStdio(s); err != nil {
-		fmt.Printf("Server error: %v\n", err)
+	transport := flag.String("transport", "stdio", "Transport type (stdio or sse)")
+	port := flag.Int("port", 8080, "TCP port for SSE transport")
+	flag.Parse()
+
+	fmt.Printf("Starting MCP System Monitor server with %s transport...\n", *transport)
+
+	if *transport == "sse" {
+		sseUrl := fmt.Sprintf("http://localhost:%d", *port)
+		sseServer := server.NewSSEServer(s, server.WithBaseURL(sseUrl))
+		if err := sseServer.Start(fmt.Sprintf(":%d", *port)); err != nil {
+			log.Fatalf("Server error: %v", err)
+		}
+		log.Printf("SSE server listening on port %d", *port)
+	} else {
+		if err := server.ServeStdio(s); err != nil {
+			log.Fatalf("Server error: %v", err)
+		}
 	}
-} 
+}
