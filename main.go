@@ -41,13 +41,19 @@ func main() {
 
 	transport := flag.String("transport", "stdio", "Transport type (stdio or sse)")
 	port := flag.Int("port", 8080, "TCP port for SSE transport")
+	baseURL   := flag.String("base-url", "",
+        "Absolute base URL to announce in the first SSE frame. "+
+        "Leave blank to default to http://localhost:<port>")
 	flag.Parse()
 
 	fmt.Printf("Starting MCP System Monitor server with %s transport...\n", *transport)
 
 	if *transport == "sse" {
-		sseUrl := fmt.Sprintf("http://localhost:%d", *port)
-		sseServer := server.NewSSEServer(s, server.WithBaseURL(sseUrl))
+		url := *baseURL
+		if url == "" {
+         		url = fmt.Sprintf("http://localhost:%d", *port)
+     		}
+	     	sseServer := server.NewSSEServer(s, server.WithBaseURL(url))
 		if err := sseServer.Start(fmt.Sprintf(":%d", *port)); err != nil {
 			log.Fatalf("Server error: %v", err)
 		}
