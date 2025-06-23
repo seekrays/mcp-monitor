@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/coreos/go-systemd/v22/login1"
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/shirou/gopsutil/v4/host"
 )
@@ -25,12 +26,19 @@ func Handler(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolRes
 		return mcp.NewToolResultError(fmt.Sprintf("Failed to get host information: %v", err)), nil
 	}
 
-	// Get user information
-	users, err := host.Users()
-	if err != nil {
-		return mcp.NewToolResultError(fmt.Sprintf("Failed to get user information: %v", err)), nil
+	// Get user information from systemd, fallback to gopsiutils
+	var users interface{}
+	if systemdCon, err := login1.New(); err == nil {
+		users, err = systemdCon.ListUsersContext(context.Background())
+	} else {
+		if err != nil {
+			return mcp.NewToolResultError(fmt.Sprintf("Failed to get user information: %v", err)), nil
+		}
+		users, err = host.Users()
+		if err != nil {
+			return mcp.NewToolResultError(fmt.Sprintf("Failed to get user information: %v", err)), nil
+		}
 	}
-
 	// Get boot time
 	bootTime, err := host.BootTime()
 	if err != nil {
@@ -40,12 +48,12 @@ func Handler(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolRes
 
 	// Build result
 	result := map[string]interface{}{
-		"info":        info,
-		"users":       users,
-		"boot_time":   bootTime,
+		"info":                info,
+		"users":               users,
+		"boot_time":           bootTime,
 		"boot_time_formatted": bootTimeFormatted,
-		"uptime":      info.Uptime,
-		"uptime_formatted": formatUptime(info.Uptime),
+		"uptime":              info.Uptime,
+		"uptime_formatted":    formatUptime(info.Uptime),
 	}
 
 	// Convert result to JSON
@@ -65,4 +73,4 @@ func formatUptime(uptime uint64) string {
 	seconds := uptime % 60
 
 	return fmt.Sprintf("%d days %d hours %d minutes %d seconds", days, hours, minutes, seconds)
-} 
+}

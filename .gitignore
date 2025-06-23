@@ -24,3 +24,7 @@ go.work.sum
 # env file
 .env
 /bin
+
+
+# vendored go libs
+vendor/
