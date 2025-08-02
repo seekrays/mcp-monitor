@@ -7,7 +7,7 @@ before:
 
 builds:
   - id: mcp-monitor
-    main: ./cmd/mcp-monitor
+    main: ./main.go
     binary: mcp-monitor
     env:
       - CGO_ENABLED=0
