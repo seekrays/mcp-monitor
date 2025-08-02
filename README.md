@@ -1,5 +1,6 @@
 # MCP System Monitor
-
+![Go](https://github.com/seekrays/mcp-monitor/actions/workflows/go.yml/badge.svg)
+![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/seekrays/mcp-monitor?sort=semver)
 [![Discord](https://img.shields.io/badge/Discord-Join%20Chat-blue?style=flat&logo=discord)](https://discord.gg/kbMJ9Qpf)
 
 A system monitoring tool that exposes system metrics via the Model Context Protocol (MCP). This tool allows LLMs to retrieve real-time system information through an MCP-compatible interface.
