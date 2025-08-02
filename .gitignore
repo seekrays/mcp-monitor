@@ -28,3 +28,4 @@ go.work.sum
 
 # vendored go libs
 vendor/
+/dist

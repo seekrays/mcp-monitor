@@ -1,0 +1,6 @@
+FROM alpine:3.18.4
+
+WORKDIR /root
+RUN apk add --no-cache gcompat
+COPY mcp-monitor /usr/local/bin/mcp-monitor
+ENTRYPOINT ["/usr/local/bin/mcp-monitor"] 

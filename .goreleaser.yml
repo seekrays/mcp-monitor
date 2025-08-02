@@ -1,0 +1,98 @@
+version: 2
+project_name: mcp-monitor
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: mcp-monitor
+    main: ./main.go
+    binary: mcp-monitor
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ignore:
+      - goos: windows
+        goarch: arm64
+
+archives:
+  - id: default
+    format: binary
+    name_template: >-
+      {{ .ProjectName }}_
+      {{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+    builds:
+      - mcp-monitor
+    files:
+      - LICENSE
+      - README.md
+    format_overrides:
+      - goos: linux
+        format: tar.gz
+      - goos: darwin
+        format: tar.gz
+      - goos: windows
+        format: zip
+
+dockers:
+  - image_templates:
+      - "ghcr.io/seekrays/{{ .ProjectName }}:{{ .Version }}-amd64"
+    dockerfile: Dockerfile.goreleaser
+    use: buildx
+    build_flag_templates:
+      - "--platform=linux/amd64"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.title={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+    goarch: amd64
+    skip_push: false
+  - image_templates:
+      - "ghcr.io/seekrays/{{ .ProjectName }}:{{ .Version }}-arm64"
+    dockerfile: Dockerfile.goreleaser
+    use: buildx
+    build_flag_templates:
+      - "--platform=linux/arm64"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.title={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+    goarch: arm64
+    skip_push: false
+
+docker_manifests:
+  - name_template: ghcr.io/seekrays/{{ .ProjectName }}:{{ .Version }}
+    image_templates:
+      - ghcr.io/seekrays/{{ .ProjectName }}:{{ .Version }}-amd64
+      - ghcr.io/seekrays/{{ .ProjectName }}:{{ .Version }}-arm64
+  - name_template: ghcr.io/seekrays/{{ .ProjectName }}:latest
+    image_templates:
+      - ghcr.io/seekrays/{{ .ProjectName }}:{{ .Version }}-amd64
+      - ghcr.io/seekrays/{{ .ProjectName }}:{{ .Version }}-arm64
+
+release:
+  github:
+    owner: seekrays
+    name: "{{ .ProjectName }}"
+  prerelease: auto
+  draft: false
+  name_template: "{{ .Tag }}"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^ci:"
+      - "^chore:"

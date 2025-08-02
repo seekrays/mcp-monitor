@@ -2,6 +2,7 @@ all: build
 
 # Version and application information
 VERSION := 1.0.0
+REPO := ghcr.io/seekrays/mcp-monitor
 APPNAME := mcp-monitor
 BUILDDIR := ./bin
 
@@ -43,6 +44,14 @@ build-darwin-arm64: init
 build-all: build-windows-amd64 build-darwin-amd64 build-darwin-arm64
 	@echo "All platforms built successfully"
 	@ls -la $(BUILDDIR)
+
+.PHONY: docker-build
+docker-build:
+	docker build -t $(REPO):$(VERSION) -f Dockerfile .
+
+.PHONY: docker-push
+docker-push:
+	docker push $(REPO):$(VERSION)
 
 # Help information
 .PHONY: help

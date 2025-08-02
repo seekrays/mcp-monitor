@@ -30,10 +30,10 @@ func Handler(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolRes
 	var users interface{}
 	if systemdCon, err := login1.New(); err == nil {
 		users, err = systemdCon.ListUsersContext(context.Background())
-	} else {
 		if err != nil {
 			return mcp.NewToolResultError(fmt.Sprintf("Failed to get user information: %v", err)), nil
 		}
+	} else {
 		users, err = host.Users()
 		if err != nil {
 			return mcp.NewToolResultError(fmt.Sprintf("Failed to get user information: %v", err)), nil
